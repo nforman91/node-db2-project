@@ -1,5 +1,4 @@
 const express = require('express')
-const db = require('../../data/db-config')
 const knex = require('knex')
 
 const {
@@ -10,9 +9,10 @@ const {
 } = require('./cars-middleware')
 
 const router = express.Router()
+const Cars = require('./../cars/cars-model')
 
 router.get('/', (req, res, next) => {
-    db('cars')
+    Cars.getAll()
         .then(cars => {
             res.status(200).json(cars)
         })
@@ -21,7 +21,7 @@ router.get('/', (req, res, next) => {
 
 router.get('/:id', checkCarId, (req, res, next) => {
     const { id } = req.params
-    db('cars').where({ id }).first()
+    Cars.getById(id)
         .then(car => {
             res.status(200).json(car)
         })
@@ -30,10 +30,7 @@ router.get('/:id', checkCarId, (req, res, next) => {
 
 router.post('/', checkCarPayload, checkVinNumberValid, checkVinNumberUnique, (req, res, next) => {
     const carData = req.body
-    db('cars').insert(carData)
-        .then(ids => {
-            db('cars').where({ id: ids[0] })
-        })
+    Cars.create(carData)
         .then(newCar => {
             res.status(201).json(newCar)
         })
