@@ -6,6 +6,6 @@ const server = express()
 
 server.use(express.json())
 
-server.use('./api/cars', CarsRouter)
+server.use('/api/cars', CarsRouter)
 
 module.exports = server

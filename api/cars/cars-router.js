@@ -5,7 +5,7 @@ const knex = require('knex')
 const {
     checkCarId,
     checkCarPayload,
-    // checkVinNumberValid,
+    checkVinNumberValid,
     checkVinNumberUnique
 } = require('./cars-middleware')
 
@@ -28,7 +28,7 @@ router.get('/:id', checkCarId, (req, res, next) => {
         .catch(next)
 })
 
-router.post('/', checkCarPayload, checkVinNumberUnique, (req, res, next) => {
+router.post('/', checkCarPayload, checkVinNumberValid, checkVinNumberUnique, (req, res, next) => {
     const carData = req.body
     db('cars').insert(carData)
         .then(ids => {

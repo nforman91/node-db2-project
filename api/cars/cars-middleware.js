@@ -1,6 +1,7 @@
 const db = require('../../data/db-config')
 const Cars = require('../cars/cars-model')
 const yup = require('yup')
+const vin = require('vin-validator')
 
 const carSchema = yup.object().shape({
   vin: yup
@@ -34,7 +35,7 @@ const checkCarPayload = async (req, res, next) => {
   try {
     const validated = await carSchema.validate(
       req.body,
-      { strict: false, stripUnknown: true }
+      { strict: true, stripUnknown: true }
     )
     req.body = validated
     next()
@@ -44,13 +45,13 @@ const checkCarPayload = async (req, res, next) => {
 }
 
 const checkVinNumberValid = (req, res, next) => {
-  const { vin } = req.body
-  try {
-    var vinValidator = require('vin-validator');
-    var isValidVin = vinValidator.validate(vin);
-    // isValidVin
-  } catch (err) {
-    next({ status: 400, message: `vin ${vin} is invalid` })
+  if (vin.validate(req.body.vin)) {
+    next()
+  } else {
+    next({
+      status: 400,
+      message: `vin ${req.body.vin} is invalid`
+    })
   }
 }
 
