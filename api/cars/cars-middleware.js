@@ -2,6 +2,7 @@ const db = require('../../data/db-config')
 const Cars = require('../cars/cars-model')
 const yup = require('yup')
 const vin = require('vin-validator')
+const router = require('./cars-router')
 
 const carSchema = yup.object().shape({
   vin: yup
