@@ -14,7 +14,6 @@ const Cars = require('../cars/cars-model')
 // })
 
 const checkCarId = (req, res, next) => {
-  // DO YOUR MAGIC
   const { id } = req.params
   Cars.getById(id)
     .then(possibleCar => {
@@ -28,7 +27,6 @@ const checkCarId = (req, res, next) => {
 }
 
 const checkCarPayload = (req, res, next) => {
-  // DO YOUR MAGIC
   const { vin, make, model, mileage } = req.body
   if (
     vin &&
@@ -43,14 +41,12 @@ const checkCarPayload = (req, res, next) => {
 }
 
 const checkVinNumberValid = (req, res, next) => {
-  // DO YOUR MAGIC
   var vinValidator = require('vin-validator');
   var isValidVin = vinValidator.validate('11111111111111111');
   { message: "vin <vin number> is invalid" }
 }
 
 const checkVinNumberUnique = async (req, res, next) => {
-  // DO YOUR MAGIC
   const { vin } = req.body
   try {
     const existing = await db('cars')
