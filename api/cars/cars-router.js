@@ -13,8 +13,8 @@ const router = express.Router();
 
 router.get('/', (req, res, next) => {
     db('cars')
-        .then(car => {
-            res.status(200).json(car)
+        .then(cars => {
+            res.status(200).json(cars)
         })
         .catch(next)
 })

@@ -1,17 +1,21 @@
 const db = require('../../data/db-config')
 const Cars = require('../cars/cars-model')
-// const yup = require('yup')
+const yup = require('yup')
 
-// const carSchema = yup.object().shape({
-//   vin: yup
-//     .required('vin is missing'),
-//   make: yup
-//     .required('make is missing'),
-//   model: yup
-//     .required('model is missing'),
-//   mileage: yup
-//     .required('mileage is missing')
-// })
+const carSchema = yup.object().shape({
+  vin: yup
+    .string()
+    .required('vin is missing'),
+  make: yup
+    .string()
+    .required('make is missing'),
+  model: yup
+    .string()
+    .required('model is missing'),
+  mileage: yup
+    .number()
+    .required('mileage is missing')
+})
 
 const checkCarId = (req, res, next) => {
   const { id } = req.params
@@ -26,24 +30,28 @@ const checkCarId = (req, res, next) => {
     })
 }
 
-const checkCarPayload = (req, res, next) => {
-  const { vin, make, model, mileage } = req.body
-  if (
-    vin &&
-    make &&
-    model &&
-    mileage
-  ) {
+const checkCarPayload = async (req, res, next) => {
+  try {
+    const validated = await carSchema.validate(
+      req.body,
+      { strict: false, stripUnknown: true }
+    )
+    req.body = validated
     next()
-  } else {
-    res.status(400).json({ message: "<field name> is missing" })
+  } catch (err) {
+    next({ status: 400, message: err.message })
   }
 }
 
 const checkVinNumberValid = (req, res, next) => {
-  var vinValidator = require('vin-validator');
-  var isValidVin = vinValidator.validate('11111111111111111');
-  { message: "vin <vin number> is invalid" }
+  const { vin } = req.body
+  try {
+    var vinValidator = require('vin-validator');
+    var isValidVin = vinValidator.validate(vin);
+    // isValidVin
+  } catch (err) {
+    next({ status: 400, message: `vin ${vin} is invalid` })
+  }
 }
 
 const checkVinNumberUnique = async (req, res, next) => {

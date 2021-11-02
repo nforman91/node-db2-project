@@ -8,10 +8,4 @@ server.use(express.json())
 
 server.use('./api/cars', CarsRouter)
 
-server.use('*', (req, res) => {
-    res.status(400).json({
-        message: 'not found'
-    })
-})
-
 module.exports = server
